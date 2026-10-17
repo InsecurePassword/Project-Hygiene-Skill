@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+.project-hygiene-*.json
+.project-hygiene-lock/
+.project-hygiene-trash/

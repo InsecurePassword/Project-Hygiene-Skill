@@ -1,0 +1,10 @@
+{
+  "name": "project-hygiene-skill",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local project artifact manifests and recoverable cleanup for Pi and OpenCode",
+  "keywords": ["pi-package"],
+  "repository": {"type": "git", "url": "https://github.com/InsecurePassword/Project-Hygiene-Skill.git"},
+  "pi": {"skills": ["./skills"], "prompts": ["./prompts/*.md"]},
+  "scripts": {"test": "python -m unittest discover -s tests -v"}
+}
