@@ -8,7 +8,7 @@ A small, local-only skill and standard-library Python cleanup tool for Pi and Op
 - **/ProjectDoneClean**: after the owner's explicit total-project-completion declaration and a manifest audit, remove all explicitly disposable development artifacts, including useful-during-development items and tracked disposable scaffolding. Preserve source/product, secrets, retained dependencies and unclassified files.
 - **/ProjectManifestAudit**: read-only LLM review of classifications, references and missing/unregistered files. Metadata validation is automated; whether a file is still needed requires project reasoning, not a filename heuristic.
 
-Only command stubs and the skill's short discovery metadata are registered. Detailed instructions are separate references read on demand. The core skill suggests basic cleanup after meaningful completed-work checkpoints using a stable candidate fingerprint; it does not nag every turn or silently clean.
+The skill's short discovery metadata is registered; Pi's package installer and the bundled OpenCode installer also register the command stubs. Detailed instructions are separate references read on demand. The core skill suggests basic cleanup after meaningful completed-work checkpoints using a stable candidate fingerprint; it does not nag every turn or silently clean.
 
 ## Layout
 
@@ -16,7 +16,7 @@ New development debris belongs in `tmp`, `tmplogs`, `test-tools`, `scaffolding`,
 
 ## Install from this private GitHub repository
 
-Requirements: Python 3.10+, Git, and an existing GitHub login with access to this private repository. Use your normal Git credential manager or SSH authentication; never paste tokens into these files or commands. No npm publication, dependencies or install scripts are used.
+Requirements: Python 3.10+, Git, and an existing GitHub login with access to this private repository. Use your normal Git credential manager or SSH authentication; never paste tokens into these files or commands. The cleanup tool uses only the Python standard library. The recommended OpenCode installation additionally requires Node.js/npm (`npx`); Project Hygiene itself does not need to be published to npm.
 
 ### Pi / Pi-GUI
 
@@ -39,6 +39,29 @@ pi remove git:github.com/InsecurePassword/Project-Hygiene-Skill
 `pi update --extensions` reconciles all installed extension packages, not just this one. For reproducibility, append `@<commit-sha>` to the Git source; pinned commits do not advance automatically. Removing this package does not delete project manifests or quarantined project files.
 
 ### OpenCode
+
+The cross-agent [skills CLI](https://github.com/vercel-labs/skills) installs and wires skills directly into OpenCode. **Recommended:** run this from your project directory:
+
+```sh
+npx skills add InsecurePassword/Project-Hygiene-Skill/skills/project-hygiene --agent opencode
+```
+
+The source names the actual `skills/project-hygiene` directory inside this repository. Installation is project-local by default; add `--global` to make the skill available across projects. Restart/reload OpenCode and verify that `project-hygiene` is discovered.
+
+This installs the skill with its bundled references and Python script. The separate `/ProjectClean`, `/ProjectDoneClean`, and `/ProjectManifestAudit` command templates under `.opencode/commands` are not registered by `skills add`. The alternative below installs the skill and those command templates together.
+
+For Skills CLI-managed installations, update or remove the skill with:
+
+```sh
+npx skills update project-hygiene --project
+npx skills remove project-hygiene --agent opencode
+```
+
+Run these from the same project directory. For a global installation, replace `--project` with `--global` on update and add `--global` on remove.
+
+#### Bundled installer alternative: skill and slash commands
+
+Use this as an alternative installation method, or to maintain an existing bundled-installer installation. It manages both the skill and command files. To switch the same destination to the Skills CLI, first use this installer's `uninstall` command with the original destination option; it moves both the skill and command files into its recovery backup. Preserve/reconcile any local edits it reports before retrying.
 
 Clone using your existing Git authentication, then run the bundled installer:
 
@@ -66,7 +89,7 @@ The installer is deliberately small, not a transactional package manager. Stop c
 
 ### Loading and hooks
 
-Only compact command stubs and skill discovery metadata are registered. Each command loads its own reference on demand. No hooks, background watcher, automatic cleanup, inference call or changes to project files run at installation.
+OpenCode discovers the installed skill through its `SKILL.md` metadata. Where installed, each compact command stub loads its own reference on demand. Project Hygiene installs no hooks, background watcher, automatic cleanup or inference service.
 
 [Pi packages](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/packages.md) · [Pi prompt templates](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/prompt-templates.md) · [OpenCode commands](https://opencode.ai/docs/commands/) · [OpenCode skills](https://opencode.ai/docs/skills/)
 
